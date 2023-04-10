@@ -59,11 +59,14 @@ function keyboardEvent(event) {
 }
 
 // add key listeners to window
-addEventListener("keydown", keyboardEvent);
-addEventListener("keyup", keyboardEvent);
+const keyupEvent = rxjs.fromEvent(document, "keyup");
+const keydownEvent = rxjs.fromEvent(document, "keydown");
+keyupEvent.subscribe( (x) => keyboardEvent(x) );
+keydownEvent.subscribe( (x) => keyboardEvent(x) );
 
 // For SO snippet as it will not focus without user click.
-canvas.addEventListener("click",() =>  requestAnimationFrame(update), {once: true});
+const clickCanvas = rxjs.fromEvent(canvas, "click");
+clickCanvas.subscribe( () =>  requestAnimationFrame(update), {once: true});
 ctx.canvas.width = SCALING_FACTOR * canvas.width;
 ctx.canvas.height = SCALING_FACTOR * canvas.height;
 ctx.font = "16px arial";
