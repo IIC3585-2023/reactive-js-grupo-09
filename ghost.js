@@ -29,14 +29,15 @@ class Ghost {
     }, 10000);
   }
 
-  isInRange() {
-    let xDistance = Math.abs(pacman.getMapX() - this.getMapX());
-    let yDistance = Math.abs(pacman.getMapY() - this.getMapY());
+  isInRange(aPacman) {
+    let xDistance = Math.abs(aPacman.getMapX() - this.getMapX());
+    let yDistance = Math.abs(aPacman.getMapY() - this.getMapY());
     if (
       Math.sqrt(xDistance * xDistance + yDistance * yDistance) <= this.range
     ) {
       return true;
     }
+
     return false;
   }
 
@@ -47,8 +48,10 @@ class Ghost {
   }
 
   moveProcess() {
-    if (this.isInRange()) {
+    if (this.isInRange(pacman)) {
       this.target = pacman;
+    } else if (this.isInRange(pacmanSecond)) {
+      this.target = pacmanSecond;
     } else {
       this.target = randomTargetsForGhosts[this.randomTargetIndex];
     }
@@ -121,7 +124,7 @@ class Ghost {
       parseInt(this.target.x / oneBlockSize),
       parseInt(this.target.y / oneBlockSize)
     );
-    if (typeof this.direction == 'undefined') {
+    if (typeof this.direction == "undefined") {
       this.direction = tempDirection;
       return;
     }
@@ -262,7 +265,7 @@ class Ghost {
     );
     canvasContext.restore();
     canvasContext.beginPath();
-    canvasContext.strokeStyle = 'red';
+    canvasContext.strokeStyle = "red";
     canvasContext.arc(
       this.x + oneBlockSize / 2,
       this.y + oneBlockSize / 2,
@@ -270,7 +273,7 @@ class Ghost {
       0,
       2 * Math.PI
     );
-    canvasContext.stroke();
+    // canvasContext.stroke();
   }
 }
 
