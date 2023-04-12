@@ -1,15 +1,15 @@
-const canvas = document.getElementById("canvas");
-const canvasContext = canvas.getContext("2d");
-canvasContext.font = "16px arial";
-canvasContext.fillStyle = "#ffff";
+const canvas = document.getElementById('canvas');
+const canvasContext = canvas.getContext('2d');
+canvasContext.font = '16px arial';
+canvasContext.fillStyle = '#ffff';
 canvasContext.fillText(
-  "CLICK HERE TO START",
+  'CLICK HERE TO START',
   canvas.width / 2,
   canvas.height / 2
 );
-const pacmanFrames = document.getElementById("animation");
-const pacmanSecondFrames = document.getElementById("animation_green");
-const ghostFrames = document.getElementById("ghosts");
+const pacmanFrames = document.getElementById('animation');
+const pacmanSecondFrames = document.getElementById('animation_green');
+const ghostFrames = document.getElementById('ghosts');
 
 const createRect = (x, y, width, height, color) => {
   canvasContext.fillStyle = color;
@@ -37,7 +37,7 @@ const oneBlockSize = 20; // defines the size of the map
 // wall visuals
 const wallSpaceWidth = oneBlockSize / 1.6;
 const wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
-const wallInnerColor = "black";
+const wallInnerColor = 'black';
 
 let randomTargetsForGhosts = [
   { x: 1 * oneBlockSize, y: 1 * oneBlockSize },
@@ -105,8 +105,10 @@ const keysPacmanSecond = {
   d: DIRECTION_RIGHT,
   s: DIRECTION_BOTTOM,
 };
+
+// keyboard observer
 const keyboardObservable = (pacman, keys) => {
-  const keyboardEvent$ = rxjs.fromEvent(window, "keydown").pipe(
+  const keyboardEvent$ = rxjs.fromEvent(window, 'keydown').pipe(
     rxjs.filter((event) => {
       return Object.keys(keys).includes(event.key);
     })
@@ -116,6 +118,7 @@ const keyboardObservable = (pacman, keys) => {
     pacman.nextDirection = keys[event.key];
   });
 };
+
 const createNewPacman = () => {
   pacman = new Pacman(
     oneBlockSize,
@@ -187,7 +190,7 @@ const drawFoods = () => {
           i * oneBlockSize + oneBlockSize / 3,
           oneBlockSize / 3,
           oneBlockSize / 3,
-          "#FEB897"
+          '#FEB897'
         );
       }
     }
@@ -197,7 +200,7 @@ const drawFoods = () => {
 // important need changes
 const draw = () => {
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  createRect(0, 0, canvas.width, canvas.height, "black");
+  createRect(0, 0, canvas.width, canvas.height, 'black');
   drawWalls();
   drawFoods();
   pacman.draw();
@@ -209,9 +212,7 @@ const draw = () => {
 
 restartPacmanAndGhosts();
 
-const clickCanvas$ = rxjs.fromEvent(canvas, "click");
+const clickCanvas$ = rxjs.fromEvent(canvas, 'click');
 clickCanvas$
   .pipe(rxjs.take(1))
   .subscribe(() => gameInterval$.subscribe(), { once: true });
-
-// keyboard observer
