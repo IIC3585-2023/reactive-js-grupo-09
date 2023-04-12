@@ -1,5 +1,8 @@
 const canvas = document.getElementById('canvas');
 const canvasContext = canvas.getContext('2d');
+canvasContext.font = "16px arial";
+canvasContext.fillStyle = "#ffff";
+canvasContext.fillText("Click to Start", canvas.width / 2, canvas.height / 2);
 const pacmanFrames = document.getElementById('animation');
 const pacmanSecondFrames = document.getElementById('animation_green');
 const ghostFrames = document.getElementById('ghosts');
@@ -62,7 +65,7 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
   }) */
 );
 
-gameInterval$.subscribe();
+// gameInterval$.subscribe();
 
 /* const restartPacmanAndGhosts = () => {
   createNewPacman();
@@ -108,6 +111,13 @@ const draw = () => {
 };
 
 createNewPacman();
+
+const clickCanvas$ = rxjs.fromEvent(canvas, "click");
+clickCanvas$.pipe(
+  rxjs.take(1),
+  // rxjs.tap(() => drawBlocks(setBoard('level-1.txt')))
+  )
+  .subscribe( () =>  gameInterval$.subscribe(), {once: true});
 
 // keyboard observer
 const keyboardEvent$ = rxjs.fromEvent(window, 'keydown');
