@@ -17,6 +17,8 @@ class Pacman {
     moveProcess() {
         this.changeDirectionIfPossible();
         this.moveForwards();
+
+
         if (this.checkCollisions()) {
             this.moveBackwards();
             return;
@@ -108,9 +110,15 @@ class Pacman {
 
     changeDirectionIfPossible() {
         if (this.direction == this.nextDirection) return;
+        
+        
+        
         let tempDirection = this.direction;
+
         this.direction = this.nextDirection;
         this.moveForwards();
+
+
         if (this.checkCollisions()) {
             this.moveBackwards();
             this.direction = tempDirection;
@@ -130,15 +138,6 @@ class Pacman {
         return mapY;
     }
 
-    getMapXRightSide() {
-        let mapX = parseInt((this.x * 0.99 + oneBlockSize) / oneBlockSize);
-        return mapX;
-    }
-
-    getMapYRightSide() {
-        let mapY = parseInt((this.y * 0.99 + oneBlockSize) / oneBlockSize);
-        return mapY;
-    }
 
     changeAnimation() {
         this.currentFrame =
