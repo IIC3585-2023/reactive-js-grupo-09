@@ -76,6 +76,7 @@ const drawWalls = () => {
             wallInnerColor
           );
         }
+        
       }
     }
   }
