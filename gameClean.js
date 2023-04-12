@@ -21,6 +21,8 @@ const DIRECTION_BOTTOM = 1;
 // Game variables
 const fps = 30;
 const oneBlockSize = 20; // defines the size of the map
+
+// wall visuals
 const wallSpaceWidth = oneBlockSize / 1.6;
 const wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
 const wallInnerColor = 'black';
@@ -56,17 +58,17 @@ const createNewPacman = () => {
 const gameInterval$ = rxjs.interval(1000 / fps).pipe(
   rxjs.map(() => update()),
   rxjs.map(() => draw()),
-  rxjs.map(() => {
+  rxjs.map(() => { // check if pacman1 eats food
     if ( map[pacman.getMapY()][pacman.getMapX()] == 2) {
       map[pacman.getMapY()][pacman.getMapX()] = 3;
       score++;
   }
   }),
-  rxjs.map(() => {
-    if ( map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] == 2) {
+  rxjs.map(() => { // check if pacman2 eats food
+    if (map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] == 2) {
       map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] = 3;
       score++;
-  }
+    }
   })
 );
 
