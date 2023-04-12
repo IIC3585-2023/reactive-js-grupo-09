@@ -122,8 +122,8 @@ clickCanvas$.pipe(
 // keyboard observer
 const keyboardEvent$ = rxjs.fromEvent(window, 'keydown');
 keyboardEvent$.subscribe((event) => {
+  event.preventDefault();
   const k = event.keyCode;
-  setTimeout(() => {
     // first pacman
     if (k == 37) {
       // left arrow
@@ -152,5 +152,4 @@ keyboardEvent$.subscribe((event) => {
       // s
       pacmanSecond.nextDirection = DIRECTION_BOTTOM;
     }
-  }, 1);
-});
+  });
