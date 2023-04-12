@@ -22,7 +22,7 @@ const DIRECTION_UP = 3;
 const DIRECTION_LEFT = 2;
 const DIRECTION_BOTTOM = 1;
 
-let ghostCount = 4;
+let ghostCount = 2;
 let ghostImageLocations = [
   { x: 0, y: 0 },
   { x: 176, y: 0 },
@@ -48,10 +48,20 @@ let randomTargetsForGhosts = [
     y: (map.length - 2) * oneBlockSize,
   },
 ];
+const transportPacman = (aPacman) => {
+  aPacman.x = oneBlockSize * 23;
+  aPacman.y = oneBlockSize * 2;
+  aPacman.nextDirection = DIRECTION_RIGHT;
 
-let onGhostCollision = () => {
+  const subscription = rxjs.timer(5000).subscribe(() => {
+    aPacman.x = oneBlockSize;
+    aPacman.y = oneBlockSize;
+  });
+};
+let onGhostCollision = (aPacman) => {
   lives--;
-  restartPacmanAndGhosts();
+  transportPacman(aPacman);
+  //restartPacmanAndGhosts();
   if (lives == 0) {
   }
 };
@@ -63,7 +73,7 @@ let createGhosts = () => {
       10 * oneBlockSize + (i % 2 == 0 ? 0 : 1) * oneBlockSize,
       oneBlockSize,
       oneBlockSize,
-      pacman.speed / 2,
+      pacman.speed,
       ghostImageLocations[i % 4].x,
       ghostImageLocations[i % 4].y,
       124,
@@ -74,25 +84,12 @@ let createGhosts = () => {
   }
 };
 // pacmans
-let pacman = new Pacman(
-  oneBlockSize,
-  oneBlockSize,
-  oneBlockSize,
-  oneBlockSize,
-  oneBlockSize / 5,
-  pacmanFrames
-);
-let pacmanSecond = new Pacman(
-  oneBlockSize * 19,
-  oneBlockSize * 21,
-  oneBlockSize,
-  oneBlockSize,
-  oneBlockSize / 5,
-  pacmanSecondFrames
-);
+let pacman;
+let pacmanSecond;
 
 // statistics
 let score = 0;
+scoreSecondPlayer = 0;
 let lives = 3;
 
 const keysPacman = {
@@ -142,6 +139,7 @@ const createNewPacman = () => {
 };
 
 // ciclo principal del juego
+
 const gameInterval$ = rxjs.interval(1000 / fps).pipe(
   rxjs.map(() => update()),
   rxjs.map(() => draw()),
@@ -154,7 +152,7 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
   rxjs.map(() => {
     if (map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] === 2) {
       map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] = 3;
-      score++;
+      scoreSecondPlayer++;
     }
   })
 );
@@ -168,7 +166,7 @@ const restartPacmanAndGhosts = () => {
 // add ti ganme interval
 const runCollition = (aPacman) => {
   if (aPacman.checkGhostCollision(ghosts)) {
-    onGhostCollision();
+    onGhostCollision(aPacman);
   }
 };
 const update = () => {
