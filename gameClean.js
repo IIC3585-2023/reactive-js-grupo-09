@@ -30,8 +30,22 @@ const wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
 const wallInnerColor = 'black';
 
 // pacmans
-let pacman;
-let pacmanSecond;
+let pacman = new Pacman(
+  oneBlockSize,
+  oneBlockSize,
+  oneBlockSize,
+  oneBlockSize,
+  oneBlockSize / 5,
+  pacmanFrames
+);
+let pacmanSecond = new Pacman(
+  oneBlockSize * 19,
+  oneBlockSize * 21,
+  oneBlockSize,
+  oneBlockSize,
+  oneBlockSize / 5,
+  pacmanSecondFrames
+);
 
 // statistics
 let score = 0;
@@ -61,13 +75,13 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
   rxjs.map(() => update()),
   rxjs.map(() => draw()),
   rxjs.map(() => {
-    if (map[pacman.getMapY()][pacman.getMapX()] == 2) {
+    if (map[pacman.getMapY()][pacman.getMapX()] === 2) {
       map[pacman.getMapY()][pacman.getMapX()] = 3;
       score++;
     }
   }),
   rxjs.map(() => {
-    if (map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] == 2) {
+    if (map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] === 2) {
       map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] = 3;
       score++;
     }
