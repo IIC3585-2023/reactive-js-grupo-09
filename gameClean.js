@@ -54,9 +54,21 @@ const createNewPacman = () => {
 
 // ciclo principal del juego
 const gameInterval$ = rxjs.interval(1000 / fps).pipe(
-  rxjs.tap(console.log),
+  // rxjs.tap(console.log),
   rxjs.map(() => update()),
-  rxjs.map(() => draw())
+  rxjs.map(() => draw()),
+  rxjs.map(() => {
+    if ( map[pacman.getMapY()][pacman.getMapX()] == 2) {
+      map[pacman.getMapY()][pacman.getMapX()] = 3;
+      score++;
+  }
+  }),
+  rxjs.map(() => {
+    if ( map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] == 2) {
+      map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] = 3;
+      score++;
+  }
+  })
   /*   rxjs.map(() => {
     if ( map[this.getMapY()][this.getMapX()] == 2) {
       map[this.getMapY()][this.getMapX()] = 3;
@@ -77,8 +89,8 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
 const update = () => {
   pacman.moveProcess();
   pacmanSecond.moveProcess();
-  pacman.eat();
-  pacmanSecond.eat();
+  // pacman.eat();
+  // pacmanSecond.eat();
 };
 
 // important needs changes
@@ -115,7 +127,6 @@ createNewPacman();
 const clickCanvas$ = rxjs.fromEvent(canvas, "click");
 clickCanvas$.pipe(
   rxjs.take(1),
-  // rxjs.tap(() => drawBlocks(setBoard('level-1.txt')))
   )
   .subscribe( () =>  gameInterval$.subscribe(), {once: true});
 
@@ -124,6 +135,7 @@ const keyboardEvent$ = rxjs.fromEvent(window, 'keydown');
 keyboardEvent$.subscribe((event) => {
   const k = event.keyCode;
   setTimeout(() => {
+    // first pacman
     if (k == 37) {
       // left arrow
       pacman.nextDirection = DIRECTION_LEFT;
