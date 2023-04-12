@@ -1,8 +1,12 @@
 const canvas = document.getElementById('canvas');
 const canvasContext = canvas.getContext('2d');
-canvasContext.font = "16px arial";
-canvasContext.fillStyle = "#ffff";
-canvasContext.fillText("Click to Start", canvas.width / 2, canvas.height / 2);
+canvasContext.font = '16px arial';
+canvasContext.fillStyle = '#ffff';
+canvasContext.fillText(
+  'CLICK HERE TO START',
+  canvas.width / 2,
+  canvas.height / 2
+);
 const pacmanFrames = document.getElementById('animation');
 const pacmanSecondFrames = document.getElementById('animation_green');
 const ghostFrames = document.getElementById('ghosts');
@@ -57,16 +61,16 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
   rxjs.map(() => update()),
   rxjs.map(() => draw()),
   rxjs.map(() => {
-    if ( map[pacman.getMapY()][pacman.getMapX()] == 2) {
+    if (map[pacman.getMapY()][pacman.getMapX()] == 2) {
       map[pacman.getMapY()][pacman.getMapX()] = 3;
       score++;
-  }
+    }
   }),
   rxjs.map(() => {
-    if ( map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] == 2) {
+    if (map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] == 2) {
       map[pacmanSecond.getMapY()][pacmanSecond.getMapX()] = 3;
       score++;
-  }
+    }
   })
 );
 
@@ -101,10 +105,10 @@ const drawFoods = () => {
 
 // important need changes
 const draw = () => {
-  canvasContext.clearRect(0, 0, canvas.width, canvas.height); // no estoy seguro para que hace esto
+  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   createRect(0, 0, canvas.width, canvas.height, 'black');
-  drawWalls(); //
-  drawFoods(); // this needs refactor
+  drawWalls();
+  drawFoods();
   pacman.draw();
   pacmanSecond.draw();
   drawScore();
@@ -113,44 +117,37 @@ const draw = () => {
 
 createNewPacman();
 
-const clickCanvas$ = rxjs.fromEvent(canvas, "click");
-clickCanvas$.pipe(
-  rxjs.take(1),
-  )
-  .subscribe( () =>  gameInterval$.subscribe(), {once: true});
+const clickCanvas$ = rxjs.fromEvent(canvas, 'click');
+clickCanvas$
+  .pipe(rxjs.take(1))
+  .subscribe(() => gameInterval$.subscribe(), { once: true });
+
+const keyboardObservable = (pacman, keys) => {
+  const keyboardEvent$ = rxjs.fromEvent(window, 'keydown').pipe(
+    rxjs.filter((event) => {
+      return Object.keys(keys).includes(event.key);
+    })
+  );
+
+  keyboardEvent$.subscribe((event) => {
+    pacman.nextDirection = keys[event.key];
+  });
+};
+
+const keysPacman = {
+  ArrowLeft: DIRECTION_LEFT,
+  ArrowUp: DIRECTION_UP,
+  ArrowRight: DIRECTION_RIGHT,
+  ArrowDown: DIRECTION_BOTTOM,
+};
+
+const keysPacmanSecond = {
+  a: DIRECTION_LEFT,
+  w: DIRECTION_UP,
+  d: DIRECTION_RIGHT,
+  s: DIRECTION_BOTTOM,
+};
 
 // keyboard observer
-const keyboardEvent$ = rxjs.fromEvent(window, 'keydown');
-keyboardEvent$.subscribe((event) => {
-  const k = event.keyCode;
-  setTimeout(() => {
-    // first pacman
-    if (k == 37) {
-      // left arrow
-      pacman.nextDirection = DIRECTION_LEFT;
-    } else if (k == 38) {
-      // up arrow
-      pacman.nextDirection = DIRECTION_UP;
-    } else if (k == 39) {
-      // right arrow
-      pacman.nextDirection = DIRECTION_RIGHT;
-    } else if (k == 40) {
-      // bottom arrow
-      pacman.nextDirection = DIRECTION_BOTTOM;
-    }
-    // second pacman
-    if (k == 65) {
-      // a
-      pacmanSecond.nextDirection = DIRECTION_LEFT;
-    } else if (k == 87) {
-      // w
-      pacmanSecond.nextDirection = DIRECTION_UP;
-    } else if (k == 68) {
-      // d
-      pacmanSecond.nextDirection = DIRECTION_RIGHT;
-    } else if (k == 83) {
-      // s
-      pacmanSecond.nextDirection = DIRECTION_BOTTOM;
-    }
-  }, 1);
-});
+keyboardObservable(pacman, keysPacman);
+keyboardObservable(pacmanSecond, keysPacmanSecond);
