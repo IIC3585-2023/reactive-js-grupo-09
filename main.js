@@ -1,15 +1,18 @@
 // draw canvas
-const SCALING_FACTOR = 3;
 const ctx = canvas.getContext("2d");
-ctx.canvas.width = SCALING_FACTOR * canvas.width;
-ctx.canvas.height = SCALING_FACTOR * canvas.height;
 ctx.font = "16px arial";
 ctx.textAlign = "center";
 ctx.fillText("Click to Start", canvas.width / 2, canvas.height / 2);
 
+const blocks = setBoard('level-1.txt');
+
 // start event
 const clickCanvas$ = rxjs.fromEvent(canvas, "click");
-clickCanvas$.subscribe( () =>  requestAnimationFrame(update), {once: true});
+clickCanvas$.pipe(
+    rxjs.take(1),
+    // rxjs.tap(() => drawBlocks(setBoard('level-1.txt')))
+    )
+    .subscribe( () =>  requestAnimationFrame(update), {once: true});
 
 // keyboard event
 const keyUp$ = rxjs.fromEvent(document, "keyup");
@@ -117,6 +120,8 @@ function update(){
          player1.draw();
          player2.move();
          player2.draw();
+         drawBlocks(blocks);
+        //  drawBlocks(INITIAL_OBJECTS.blocks)
         //  if (!keys.anykey) {
         //      ctx.fillText("Arrow keys to move!", canvas.width / 2, canvas.height / 2);
         //  }
@@ -124,3 +129,125 @@ function update(){
      frameCount += 1;
      requestAnimationFrame(update);
 }
+
+
+
+function setBoard(path) {
+    const blocks = [];
+    const width = 45;
+    const height = 45;
+
+    let board = fs.readFile(path).split('\n');
+
+    console.log(board)
+
+    board.forEach((row, i) => {
+        row.forEach((block, j) => {
+            if (block == "#"){
+                blocks.push({
+                    x: 50 * i,
+                    y: 50 * j,
+                    width,
+                    height,
+                });
+            }
+        })
+    });
+
+    // for (let i = 0; i < 11; i++) {
+    //     blocks.push({
+    //         x: 50 * i,
+    //         y:0,
+    //         width:width,
+    //         height:height
+    //     });
+
+    //     blocks.push({
+    //         x: 50 * i,
+    //         y: 500,
+    //         width:width,
+    //         height:height
+    //     })
+    // };
+
+    // for (let i = 0; i < 9; i++) {
+    //     blocks.push({
+    //         x: 0,
+    //         y:50+50*i,
+    //         width:width,
+    //         height:height
+    //     });
+    //     blocks.push({
+    //         x: 500,
+    //         y:50+50*i,
+    //         width:width,
+    //         height:height
+    //     });
+    // };
+
+    // [1,2,4,5,6,8,9].forEach((i) => {
+    //     blocks.push({
+    //         x: 50,
+    //         y: 50*i,
+    //         width:width,
+    //         height:height
+    //     });
+
+    //     blocks.push({
+    //         x: 450,
+    //         y: 50*i,
+    //         width:width,
+    //         height:height
+    //     });
+    // });
+
+    // [2,3,4,6,7,8].forEach((i) => {
+    //     blocks.push({
+    //         x: 150,
+    //         y: 50*i,
+    //         width:width,
+    //         height:height
+    //     });
+
+    //     blocks.push({
+    //         x: 350,
+    //         y: 50*i,
+    //         width:width,
+    //         height:height
+    //     });
+    // });
+
+    // [1,2,3,7,8,9].forEach((i) => {
+    //     blocks.push({
+    //         x: 250,
+    //         y: 50*i,
+    //         width:width,
+    //         height:height
+    //     });
+
+    // });
+
+    return blocks;
+}
+
+function drawBlock(block) {
+    ctx.beginPath();
+    ctx.rect(
+        block.x,
+        block.y,
+        block.width,
+        block.height
+    );
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawBlocks(blocks) {
+    blocks.forEach((block) => drawBlock(block));
+}
+
+// const INITIAL_OBJECTS = {
+//     blocks: factory(),
+//     score: 0
+// };
+
