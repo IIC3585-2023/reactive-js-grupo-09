@@ -54,7 +54,6 @@ const createNewPacman = () => {
 
 // ciclo principal del juego
 const gameInterval$ = rxjs.interval(1000 / fps).pipe(
-  // rxjs.tap(console.log),
   rxjs.map(() => update()),
   rxjs.map(() => draw()),
   rxjs.map(() => {
@@ -69,15 +68,7 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
       score++;
   }
   })
-  /*   rxjs.map(() => {
-    if ( map[this.getMapY()][this.getMapX()] == 2) {
-      map[this.getMapY()][this.getMapX()] = 3;
-      score++;
-  }
-  }) */
 );
-
-// gameInterval$.subscribe();
 
 /* const restartPacmanAndGhosts = () => {
   createNewPacman();
@@ -89,8 +80,6 @@ const gameInterval$ = rxjs.interval(1000 / fps).pipe(
 const update = () => {
   pacman.moveProcess();
   pacmanSecond.moveProcess();
-  // pacman.eat();
-  // pacmanSecond.eat();
 };
 
 // important needs changes
