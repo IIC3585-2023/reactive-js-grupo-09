@@ -25,6 +25,8 @@ const DIRECTION_BOTTOM = 1;
 // Game variables
 const fps = 30;
 const oneBlockSize = 20; // defines the size of the map
+
+// wall visuals
 const wallSpaceWidth = oneBlockSize / 1.6;
 const wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
 const wallInnerColor = 'black';
