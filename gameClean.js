@@ -1,14 +1,15 @@
-const canvas = document.getElementById("canvas");
-const canvasContext = canvas.getContext("2d");
-const pacmanFrames = document.getElementById("animation");
-const ghostFrames = document.getElementById("ghosts");
+const canvas = document.getElementById('canvas');
+const canvasContext = canvas.getContext('2d');
+const pacmanFrames = document.getElementById('animation');
+const pacmanSecondFrames = document.getElementById('animation_green');
+const ghostFrames = document.getElementById('ghosts');
 
 const createRect = (x, y, width, height, color) => {
   canvasContext.fillStyle = color;
   canvasContext.fillRect(x, y, width, height);
 };
 
-//directions encoding
+// directions encoding
 const DIRECTION_RIGHT = 4;
 const DIRECTION_UP = 3;
 const DIRECTION_LEFT = 2;
@@ -19,7 +20,7 @@ const fps = 30;
 const oneBlockSize = 20; // defines the size of the map
 const wallSpaceWidth = oneBlockSize / 1.6;
 const wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
-const wallInnerColor = "black";
+const wallInnerColor = 'black';
 
 // pacmans
 let pacman;
@@ -35,19 +36,22 @@ const createNewPacman = () => {
     oneBlockSize,
     oneBlockSize,
     oneBlockSize,
-    oneBlockSize / 5
+    oneBlockSize / 5,
+    pacmanFrames
   );
   pacmanSecond = new Pacman(
-    oneBlockSize * 4,
-    oneBlockSize * 4,
+    oneBlockSize * 19,
+    oneBlockSize * 21,
     oneBlockSize,
     oneBlockSize,
-    oneBlockSize / 5
+    oneBlockSize / 5,
+    pacmanSecondFrames
   );
 };
 
 // ciclo principal del juego
-const gameInterval = rxjs.interval(1000 / fps).pipe(
+const gameInterval$ = rxjs.interval(1000 / fps).pipe(
+  rxjs.tap(console.log),
   rxjs.map(() => update()),
   rxjs.map(() => draw())
   /*   rxjs.map(() => {
@@ -58,7 +62,7 @@ const gameInterval = rxjs.interval(1000 / fps).pipe(
   }) */
 );
 
-gameInterval.subscribe();
+gameInterval$.subscribe();
 
 /* const restartPacmanAndGhosts = () => {
   createNewPacman();
@@ -84,7 +88,7 @@ const drawFoods = () => {
           i * oneBlockSize + oneBlockSize / 3,
           oneBlockSize / 3,
           oneBlockSize / 3,
-          "#FEB897"
+          '#FEB897'
         );
       }
     }
@@ -94,7 +98,7 @@ const drawFoods = () => {
 // important need changes
 const draw = () => {
   canvasContext.clearRect(0, 0, canvas.width, canvas.height); // no estoy seguro para que hace esto
-  createRect(0, 0, canvas.width, canvas.height, "black");
+  createRect(0, 0, canvas.width, canvas.height, 'black');
   drawWalls(); //
   drawFoods(); // this needs refactor
   pacman.draw();
@@ -106,9 +110,9 @@ const draw = () => {
 createNewPacman();
 
 // keyboard observer
-const keyboardEvent$ = rxjs.fromEvent(window, "keydown");
+const keyboardEvent$ = rxjs.fromEvent(window, 'keydown');
 keyboardEvent$.subscribe((event) => {
-  let k = event.keyCode;
+  const k = event.keyCode;
   setTimeout(() => {
     if (k == 37) {
       // left arrow
